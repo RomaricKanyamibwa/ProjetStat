@@ -5,7 +5,7 @@
 
 data=read.table("student-mat.csv",sep=",",header=TRUE)
 d2=read.table("student-por.csv",sep=",",header=TRUE)
-data2=merge(d1,d2,by=c("school","sex","age","address","famsize","Pstatus","Medu","Fedu","Mjob","Fjob","reason","nursery","internet"))#,"guardian"
+data2=merge(data,d2,by=c("school","sex","age","address","famsize","Pstatus","Medu","Fedu","Mjob","Fjob","reason","nursery","internet"))#,"guardian"
 # print(nrow(d2))
 # print(nrow(d1))
 print(nrow(data)) # 382 students
@@ -27,6 +27,8 @@ attach(data)
 library(car)
 resD=lm(Dalc~.,data=data)
 resW=lm(Walc~.,data=data)
+summary(resD)
+summary(resW)
 vif(res) #tous inferieur a 10, pas de colinearite
 par(mfrow=c(2,2))
 plot(res)
