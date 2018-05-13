@@ -49,18 +49,19 @@ head(data)#on verifie que la table est bien une table bien structuré
 str(data)
 
 ############### ACM , Kmean et CAH
-index<-c("Walc","sex","address","famsize","Pstatus","Mjob","Fjob","internet","guardian","higher","famsup","activities","romantic")
-ACM.data=data[index]
+# index<-c("Walc","sex","address","famsize","Pstatus","Mjob","Fjob","internet","guardian","higher","famsup","activities","romantic")
+# ACM.data=data[index]
+ACM.data=Filter(is.factor, data)#or data[sapply( data,is.factor)]
 str(ACM.data)
-acm=MCA(ACM.data,quali.sup = 1,graph = F)#ou MCA(data)
+acm=MCA(ACM.data,quali.sup = 18,graph = F)#ou MCA(data)
 summary(acm)#Pour les valeurs propres le pourcentge n'est pas aussi eleve que pour le acp car en acm
 #on a bcp de modalites (on garde au moins le 4 premiers)
-plot(acm,choix="ind",invisible="var",habillage=1)
+plot(acm,choix="ind",invisible="var",habillage=18)
 
 # Kmeans sur deux premières composantes principales de l'ACM
-K=nlevels(ACM.data[,1])
+K=nlevels(ACM.data[,18])
 kmeans.acm <-  kmeans(acm$ind$coord[,1:2],centers=K,nstart=100)
-table(kmeans.acm$cluster,ACM.data[,1])
+table(kmeans.acm$cluster,ACM.data[,18])
 
 # representation des clusters dans le 1er plan factoriel :
 X11();plot(acm, choix="ind", invisible="var",col.ind=as.integer(kmeans.acm$cluster))
@@ -81,7 +82,12 @@ plot(1:10,inertie.intra,type="b",xlab="Nb. de groupes",ylab="% inertie intra")
 
 # CAH sur deux premières composantes principales de l'ACM
 cah.acm <- HCPC(acm,nb.clust=K)
+# comparaison des clustering obtenus avec kmeans et cah :
+table(kmeans.acm$cluster,cah.acm$data.clust$clust)
 
+# sans préciser nb.clust :
+cah.acm <- HCPC(acm)
+table(ACM.data[,18],cah.acm$data.clust$clust)
 
 # data0=data[,-seq(30,38,by=1)]
 # str(data0)
