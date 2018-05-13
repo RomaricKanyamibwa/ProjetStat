@@ -75,6 +75,7 @@ str4=ggplot(data, aes(x=Walc, y=mathgrades, group=Walc))+
 grid.arrange(str1,str2,str3,str4,nrow=2,ncol=2)
 
 #Anova 1
+res0=lm(avggrades~Medu,contrasts = "contr.treatement")
 res=lm(avggrades~Walc,contrasts = "contr.treatement")
 res2=lm(avggrades~Dalc,contrasts = "contr.treatement")
 # 
@@ -84,8 +85,12 @@ res2=lm(avggrades~Dalc,contrasts = "contr.treatement")
 # res5=lm(portgrades~Walc,contrasts = "contr.treatement")
 # res6=lm(portgrades~Dalc,contrasts = "contr.treatement")
 
+summary(res)
+summary(res0)
+summary(res2)
 summary(res)$coefficients
-
+summary(res0)$coefficients
+summary(res2)$coefficients
 #validation du modele
 par(mfrow=c(2,2))
 plot(res2)

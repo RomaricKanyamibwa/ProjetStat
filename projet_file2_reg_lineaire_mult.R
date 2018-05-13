@@ -34,15 +34,15 @@ data$Walc <- mapvalues(data$Walc,
                        from = 1:5, 
                        to = c("Very Low", "Low", "Medium", "High", "Very High"))
 
-data$Fedu <- as.factor(data$Fedu)      
-data$Fedu <- mapvalues(data$Fedu, 
-                       from = 0:4, 
-                       to = c("None", "Primary education (4th grade)", "Primary education (5th to 9th grade)", "Secondary education", "Higher education"))
-
-data$Medu <- as.factor(data$Medu)      
-data$Medu <- mapvalues(data$Medu, 
-                       from = 0:4, 
-                       to = c("None", "Primary education (4th grade)", "Primary education (5th to 9th grade)", "Secondary education", "Higher education"))
+# data$Fedu <- as.factor(data$Fedu)      
+# data$Fedu <- mapvalues(data$Fedu, 
+#                        from = 0:4, 
+#                        to = c("None", "Primary education (4th grade)", "Primary education (5th to 9th grade)", "Secondary education", "Higher education"))
+# 
+# data$Medu <- as.factor(data$Medu)      
+# data$Medu <- mapvalues(data$Medu, 
+#                        from = 0:4, 
+#                        to = c("None", "Primary education (4th grade)", "Primary education (5th to 9th grade)", "Secondary education", "Higher education"))
 
 print(nrow(data)) # 85 students
 head(data)#on verifie que la table est bien une table bien structurΓ©
@@ -63,23 +63,24 @@ resCompl=lm(avggrades ~.,data = data0)
 summary(resCompl)
 
 res_Stepwise0=step(res0,scope=formula(resCompl),direction="both")
-# avggrades ~ Medu + schoolsup + Pstatus + guardian + freetime + Fedu
+# avggrades ~  Medu + studytime + schoolsup + age + famrel + Mjob + famsize + Pstatus
 summary(res_Stepwise0)
 res_backwart0=step(resCompl,direction="backward")
-# avggrades ~ age + Pstatus + Mjob + Fjob + nursery + traveltime + studytime + failures + schoolsup + romantic
+# avggrades ~age + famsize + Pstatus + Mjob + Fjob + nursery + 
+# studytime + schoolsup + romantic + Dalcc
 summary(res_backwart0)
 
 vif(resCompl)
-#on enleve Medu 
-drops <- c("Medu")
-data2=data0[ , !(names(data0) %in% drops)]
-attach(data2)
-res=lm(avggrades ~.,data = data2)
-vif(res)
+# #on enleve Medu 
+# drops <- c("Medu")
+# data2=data0[ , !(names(data0) %in% drops)]
+# attach(data2)
+# res=lm(avggrades ~.,data = data2)
+# vif(res)
 
-#on enleve Fjob
-drops <- c("Fjob")
-data2=data2[ , !(names(data2) %in% drops)]
+#on enleve Mjob
+drops <- c("Mjob")
+data2=data0[ , !(names(data0) %in% drops)]
 res=lm(avggrades ~.,data = data2)
 vif(res)
 
@@ -91,17 +92,17 @@ vif(res)
 
 attach(data2)
 res_Stepwise=step(res0,scope=formula(res),direction="both")
-#avggrades ~ Mjob + studytime + health + schoolsup + age + famsize + famrel
+#avggrades ~ Medu + studytime + schoolsup + age + famrel + famsize
 summary(res_Stepwise)
 res_backwart=step(res,direction="backward")
 summary(res_backwart)
-#avggrades ~ famsize + Pstatus + Mjob + nursery + studytime + schoolsup + romantic + famre
-
+#avggrades ~ Pstatus + Medu + guardian + schoolsup + famrel + freetime
 #validation du modele
+par(mfrow=c(2,2))
 plot(res_Stepwise)#analyse de résidus
 shapiro.test(res_Stepwise$residuals)#pvalue >5% donc on garde H0, nos donnΓ©es semble gaussien
 bartlett.test(res_Stepwise$residuals~famsize)#pvalue> 5% on garde H0 ,les residues semble homoscedastique
-bartlett.test(res_Stepwise$residuals~ Pstatus)#pvalue< 5% on rejete H0 ,les residues ne semble pa homoscedastique
+bartlett.test(res_Stepwise$residuals~ Medu)#pvalue< 5% on rejete H0 ,les residues ne semble pa homoscedastique
 
 
 #Arbre de classification
@@ -130,7 +131,7 @@ colnames(rfpltdata1)<-c("lmcmpl.predictions","avggrades")
 
 errplt.rfD<-ggplot(rfpltdata1,aes(lmcmpl.predictions,avggrades))+
   geom_point(aes(color=data0[,"Dalc"]))+
-  xlab("Predicted Grades (Random Forest with 500 Trees)")+
+  xlab("Predicted Grades (Linear Regression)")+
   ylab("Actual Grades")+
   geom_abline(intercept=0,slope=1,color="#0066CC",size=1)+
   #geom_smooth(method = "lm", se = FALSE)+
@@ -139,7 +140,7 @@ errplt.rfD<-ggplot(rfpltdata1,aes(lmcmpl.predictions,avggrades))+
 
 errplt.rfW<-ggplot(rfpltdata1,aes(lmcmpl.predictions,avggrades))+
   geom_point(aes(color=data0[,"Walc"]))+
-  xlab("Predicted Grades (Random Forest with 500 Trees)")+
+  xlab("Predicted Grades (Linear Regression)")+
   ylab("Actual Grades")+
   geom_abline(intercept=0,slope=1,color="#0066CC",size=1)+
   #geom_smooth(method = "lm", se = FALSE)+
