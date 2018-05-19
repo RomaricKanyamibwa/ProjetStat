@@ -15,7 +15,7 @@ data=merge(d1,d2,by=c("school","sex","age","address","famsize","Pstatus",
                              "schoolsup","famsup","activities","higher","romantic",
                              "famrel","freetime","goout","Dalc","Walc","health","absences"))
 
-#on fait la moyenne de notes en Portogais et en Mathe et on les injecte dans notre jeu de donnees
+#on fait la moyenne de notes en Portogais et en Mathe et on les injecte dans notre jeu de donnees, parwise t test
 data$mathgrades=rowMeans(cbind(data$G1.x,data$G2.x,data$G3.x))
 data$portgrades=rowMeans(cbind(data$G1.y,data$G2.y,data$G3.y))
 #note moyenne
