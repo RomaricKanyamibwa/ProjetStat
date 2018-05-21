@@ -2,13 +2,13 @@ library(ggplot2)
 library(plyr)
 library(gridExtra)
 
-d1=read.table("student-mat.csv",sep=",",header=TRUE)
-d2=read.table("student-por.csv",sep=",",header=TRUE)
-data=merge(d1,d2,by=c("school","sex","age","address","famsize","Pstatus",
-                      "Medu","Fedu","Mjob","Fjob","reason","nursery","internet",
-                      "guardian","guardian","traveltime","studytime","failures",
-                      "schoolsup","famsup","activities","higher","romantic",
-                      "famrel","freetime","goout","Dalc","Walc","health","absences"))
+data=read.table("student-mat.csv",sep=",",header=TRUE)
+# d2=read.table("student-por.csv",sep=",",header=TRUE)
+# data=merge(d1,d2,by=c("school","sex","age","address","famsize","Pstatus",
+#                       "Medu","Fedu","Mjob","Fjob","reason","nursery","internet",
+#                       "guardian","guardian","traveltime","studytime","failures",
+#                       "schoolsup","famsup","activities","higher","romantic",
+#                       "famrel","freetime","goout","Dalc","Walc","health","absences"))
 
 #on fait la moyenne de notes en Portogais et en Mathe et on les injecte dans notre jeu de données
 data$mathgrades=rowMeans(cbind(data$G1.x,data$G2.x,data$G3.x))
@@ -67,35 +67,11 @@ str2=ggplot(data, aes(x=mathgrades, y=portgrades))+
   geom_point(aes(colour=factor(Mjob)))+ scale_colour_hue(l=25,c=150)+
   geom_smooth(method = "lm", se = FALSE)
 
+
 #Parents' Job
 grid.arrange(str1,str2,nrow=2)
 
-
-data$famsize <- mapvalues(data$famsize, 
-                          from = c("GT3","LE3"), 
-                          to = c("Less or equal to 3", "Greater or equal to 3"))
-
 #Family size
-
 ggplot(data, aes(x=mathgrades, y=portgrades)) +
   geom_point(aes(colour=factor(famsize)))+ scale_colour_hue(l=25,c=150)+
-  geom_smooth(method = "lm", se = FALSE)
-
-#internet
-ggplot(data, aes(x=mathgrades, y=portgrades)) +
-  geom_point(aes(colour=factor(internet)))+ scale_colour_hue(l=25,c=150)+
-  geom_smooth(method = "lm", se = FALSE)
-
-#paid.X et Y
-str=ggplot(data, aes(x=mathgrades, y=portgrades)) +
-  geom_point(aes(colour=factor(paid.x)))+ scale_colour_hue(l=25,c=150)+
-  geom_smooth(method = "lm", se = FALSE)
-
-str3=ggplot(data, aes(x=mathgrades, y=portgrades)) +
-  geom_point(aes(colour=factor(paid.y)))+ scale_colour_hue(l=25,c=150)+
-  geom_smooth(method = "lm", se = FALSE)
-
-#adress
-ggplot(data, aes(x=mathgrades, y=portgrades)) +
-  geom_point(aes(colour=factor(address)))+ scale_colour_hue(l=25,c=150)+
   geom_smooth(method = "lm", se = FALSE)
