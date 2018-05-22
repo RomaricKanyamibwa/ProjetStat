@@ -1,4 +1,4 @@
-#VOIESEMBERT Colette
+#VOISEMBERT Colette
 #KANYAMIBWA Romaric
 #MAIN4 Polytech-Sorbonne 2017-2018
 #Projet Analyse de donnes
@@ -51,17 +51,36 @@ str(data)
 ############### ACM , Kmean et CAH
 # index<-c("Walc","sex","address","famsize","Pstatus","Mjob","Fjob","internet","guardian","higher","famsup","activities","romantic")
 # ACM.data=data[index]
+library(FactoMineR)
 ACM.data=Filter(is.factor, data)#or data[sapply( data,is.factor)]
+ACM.data=ACM.data[,-c(1,2,3,19,20)]#on enleve  paid.x, paid.y,school,sex,address
+drops <- c("Mjob")
+ACM.data=ACM.data[ , !(names(ACM.data) %in% drops)]
+drops <- c("Fjob")
+ACM.data=ACM.data[ , !(names(ACM.data) %in% drops)]
+drops <- c("reason")
+ACM.data=ACM.data[ , !(names(ACM.data) %in% drops)]
+drops <- c("famsize")
+ACM.data=ACM.data[ , !(names(ACM.data) %in% drops)]
+drops <- c("nursery")
+ACM.data=ACM.data[ , !(names(ACM.data) %in% drops)]
+tab.disjonctif(ACM.data)
 str(ACM.data)
-acm=MCA(ACM.data,quali.sup = 18,graph = F)#ou MCA(data)
+par(mfrow=c(1,3))
+acm=MCA(ACM.data,quali.sup = 11,graph = T)#ou MCA(data)
+acm2=MCA(ACM.data,quali.sup = 10,graph = F)#ou MCA(data)
 summary(acm)#Pour les valeurs propres le pourcentge n'est pas aussi eleve que pour le acp car en acm
 #on a bcp de modalites (on garde au moins le 4 premiers)
-plot(acm,choix="ind",invisible="var",habillage=18)
+plot(acm,choix="ind",invisible="var",habillage=11)
+
+summary(acm2)#Pour les valeurs propres le pourcentge n'est pas aussi eleve que pour le acp car en acm
+#on a bcp de modalites (on garde au moins le 4 premiers)
+plot(acm2,choix="ind",invisible="var",habillage=10)
 
 # Kmeans sur deux premières composantes principales de l'ACM
-K=nlevels(ACM.data[,18])
+K=nlevels(ACM.data[,11])
 kmeans.acm <-  kmeans(acm$ind$coord[,1:2],centers=K,nstart=100)
-table(kmeans.acm$cluster,ACM.data[,18])
+table(kmeans.acm$cluster,ACM.data[,11])
 
 # representation des clusters dans le 1er plan factoriel :
 X11();plot(acm, choix="ind", invisible="var",col.ind=as.integer(kmeans.acm$cluster))
@@ -87,7 +106,7 @@ table(kmeans.acm$cluster,cah.acm$data.clust$clust)
 
 # sans préciser nb.clust :
 cah.acm <- HCPC(acm)
-table(ACM.data[,18],cah.acm$data.clust$clust)
+table(ACM.data[,11],cah.acm$data.clust$clust)
 
 # data0=data[,-seq(30,38,by=1)]
 # str(data0)

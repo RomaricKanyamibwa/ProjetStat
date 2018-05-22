@@ -95,6 +95,7 @@ str3=ggplot(data, aes(x=mathgrades, y=portgrades)) +
   geom_point(aes(colour=factor(paid.y)))+ scale_colour_hue(l=25,c=150)+
   geom_smooth(method = "lm", se = FALSE)
 
+grid.arrange(str,str3,nrow=2)
 #adress
 ggplot(data, aes(x=mathgrades, y=portgrades)) +
   geom_point(aes(colour=factor(address)))+ scale_colour_hue(l=25,c=150)+
